@@ -19,7 +19,7 @@ import javax.swing.Timer;
 public class Frame extends JPanel implements ActionListener, MouseListener, KeyListener {
 	
 	//for any debugging code we add
-	public static boolean debugging = true;
+	public static boolean debugging = false;
 	public static int width = 600;
 	public static int height = 800;
 	
@@ -40,8 +40,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	
 	Luigi luigi = new Luigi();
 	
+	Boo[] row1 = new Boo[8]; // For scrolling, make sure you have JUST ENOUGH boos so only 1 is offscreen
 	//A row of boos (moving)
-	Boo[] row1 = new Boo[10];
+	Boo[] row2 = new Boo[10];
 	
 	//A static row of lava tiles
 	Lava[][] lavaRows = new Lava[3][19];
@@ -55,11 +56,18 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		super.paintComponent(g);
 		
 		//paint the other objects on the screen
-		
 		for (Boo b : row1) { 
 			b.paint(g);
 			if (luigi.getHitbox().intersects(b.getHitbox())) {
-//				System.out.println("Death to Boo");
+				System.out.println("Death to Boo");
+				//TODO: Implement game end and restart
+			}
+		}
+		
+		for (Boo b : row2) { 
+			b.paint(g);
+			if (luigi.getHitbox().intersects(b.getHitbox())) {
+				System.out.println("Death to Boo");
 				//TODO: Implement game end and restart
 			}
 		}
@@ -67,7 +75,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		for (Lava l : lavaRows[0]) { 
 			l.paint(g);
 			if (( luigi.getHitbox().intersects(l.getHitbox()) && luigi.getHitbox().intersects(koopaShells[0].getHitbox())) && !luigi.getBottomHitbox().intersects(l.getHitbox())) {
-				canLock = true;
+				if (!locked) { canLock = true; }
 			}
 		} // Bottom Row
 		
@@ -108,8 +116,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 
 		for (int i = 0; i < row1.length; i++) {
-			row1[i] = new Boo((int) (i*100), 500);
+			row1[i] = new Boo((int) (i*110), 600, 110);
 		}
+		
+		for (int i = 0; i < row2.length; i++) {
+			row2[i] = new Boo((int) (i*100), 500, 100);
+		}// TODO: Set up the second row of boos with an offset
 		
 		for (int j = 0; j < lavaRows[0].length; j++) {		
 			lavaRows[0][j] = new Lava((int) (j*32), 400);
@@ -209,7 +221,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 					//Dismounting
 					System.out.println("Dismount");
 					locked = false;
-					luigi.y -= 20;
+					luigi.y -= 30;
 					break;
 				}
 				

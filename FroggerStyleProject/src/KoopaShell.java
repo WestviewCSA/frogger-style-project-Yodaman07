@@ -32,8 +32,8 @@ public class KoopaShell{
 		x = 0; //off screen for now
 		y = 300; 
 		
-		vx = 1;
-		vy = 1;
+		vx = 2;
+		vy = 2;
 		lower_b = Frame.height; // flipped because (0,0) is the top left corner of the screen
 		upper_b = 0;
 		

@@ -17,6 +17,7 @@ public class Boo{
 	int vx, vy;						//movement variables
 	double scaleWidth = 2.0;		//change to scale image
 	double scaleHeight = 2.0; 		//change to scale image
+	int spacing = 100; // default spacing 
 
 	//Boo moves to the right and loops around
 	public Boo() {
@@ -43,13 +44,14 @@ public class Boo{
 	
 	
 	//2nd constructor - allow setting x and y during construction
-	public Boo(int x, int y) {
+	public Boo(int x, int y, int spacing) {
 		//call the default constructor for all the normal stuff
 		this(); // invokes default constructor
 		
 		//do the specific task for THIS constructor
 		this.x = x;
 		this.y = y;	
+		this.spacing = spacing;
 		
 	}
 	
@@ -64,8 +66,11 @@ public class Boo{
 		x+=vx;
 		y+=vy;	
 		
-		if (x > Frame.width) {
-			x = -100;
+		if (x >= Frame.width + spacing - (Frame.width % spacing) ) {
+//			System.out.println(x);
+//			System.out.println(Frame.width);
+			
+			x = -spacing;
 		}
 		
 		init(x,y);
