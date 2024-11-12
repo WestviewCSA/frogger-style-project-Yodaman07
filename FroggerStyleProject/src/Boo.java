@@ -22,11 +22,11 @@ public class Boo{
 	//Boo moves to the right and loops around
 	public Boo() {
 		//load the main image (front or forward view)
-		forward 	= getImage("/imgs/"+"BooSMW.png"); //load the image for Boo
+		forward 	= getImage("/imgs/"+"BooSMW_Big.png"); //load the image for Boo
 
 		//alter these
 		//width and height for hit box
-		width = (int) (16*scaleWidth); //14 and 22 are sprite sizes
+		width = (int) (16*scaleWidth); //The hitbox should be 16 x 16 (image size is bigger though
 		height = (int) (16*scaleHeight);
 		//used for placement on the JFrame
 		x = -width; //off screen for now
@@ -56,7 +56,7 @@ public class Boo{
 	}
 	
 	public Rectangle getHitbox() {
-		return new Rectangle(x, y, width, height);
+		return new Rectangle(x + (width/4), y + (height/4), width, height);
 	}
 
 	public void paint(Graphics g) {
@@ -83,7 +83,10 @@ public class Boo{
 		if (Frame.debugging) {
 			//draw hitbox only if debugging
 			g.setColor(Color.green);
-			g.drawRect(x, y, width, height);
+			g.drawRect(x + (width/4), y + (height/4), width, height);
+			// The (width/4) and (height/4) part moves down the hitbox to center on the sprite instead of being in the top right corner, 
+			//as the sprite is 24x24 because it contains extra space for colors
+			
 		}
 		
 	}

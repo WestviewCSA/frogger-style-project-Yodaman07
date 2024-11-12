@@ -7,7 +7,7 @@ import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.net.URL;
 
-public class Luigi{
+public class DryBones{
 	private Image forward; //, backward, left, right; 	
 	private AffineTransform tx;
 	
@@ -17,21 +17,22 @@ public class Luigi{
 	int vx, vy;						//movement variables
 	double scaleWidth = 2.0;		//change to scale image
 	double scaleHeight = 2.0; 		//change to scale image
+	int spacing = 100; // default spacing 
 
-	public Luigi() {
+	//Boo moves to the right and loops around
+	public DryBones() {
 		//load the main image (front or forward view)
-		forward 	= getImage("/imgs/"+"LuigiSMW.png"); //load the image for Luigi
+		forward 	= getImage("/imgs/"+"DryBones.png"); //load the image for Boo
 
 		//alter these
 		//width and height for hit box
-		width = (int) (14*scaleWidth);
-		height = (int) (22*scaleHeight);
+		width = (int) (16*scaleWidth); //The hitbox should be 16 x 27 (image size is bigger though
+		height = (int) (27*scaleHeight);
 		//used for placement on the JFrame
-		x = 600/2 - width/2;
-		y = 800-(height*2)+15; //not sure about the + 15 but it works?
+		x = width; //off screen for now
+		y = 500; 
 		
-		//if your movement will not be "hopping base
-		vx = 0;
+		vx = -5;
 		vy = 0;
 		
 		tx = AffineTransform.getTranslateInstance(0, 0);
@@ -43,23 +44,19 @@ public class Luigi{
 	
 	
 	//2nd constructor - allow setting x and y during construction
-	public Luigi(int x, int y) {
+	public DryBones(int x, int y, int spacing) {
 		//call the default constructor for all the normal stuff
 		this(); // invokes default constructor
 		
 		//do the specific task for THIS constructor
 		this.x = x;
 		this.y = y;	
+		this.spacing = spacing;
 		
 	}
 	
-	public Rectangle getBottomHitbox(){
-		Rectangle bottomHitbox = new Rectangle(x, y+(3*height/4), width, height/4);
-		return bottomHitbox;
-	}
-	
 	public Rectangle getHitbox() {
-		return new Rectangle(x, y, width, height);
+		return new Rectangle(x + (width/4), y + (height/4), width, height);
 	}
 
 	public void paint(Graphics g) {
@@ -67,23 +64,15 @@ public class Luigi{
 		Graphics2D g2 = (Graphics2D) g;
 		
 		x+=vx;
-		y+=vy;
-		if (x >= Frame.width-28) { // 14 is player width
-			x = Frame.width-28;
-		}else if (x <= 0){
-			x = 0;
-		}
+		y+=vy;	
 		
-		if (y >= Frame.height - 70) {
-			y = Frame.height-70;
-		} else if (y <= 0) {
-			y = 0;
-		}
 		
-		//for infinite scrolling - teleport to the other side
-		//once it leaves the other side!
+		if (x <= -spacing) {
+			x = Frame.width + spacing + (Frame.width % spacing);
+		}
 		
 		init(x,y);
+		
 		
 		g2.drawImage(forward, tx, null);
 		
@@ -92,14 +81,10 @@ public class Luigi{
 		if (Frame.debugging) {
 			//draw hitbox only if debugging
 			g.setColor(Color.green);
-			g.drawRect(x, y, width, height);
-			
-			g.setColor(Color.red);
-			g.drawRect(x, y+(3*height/4), width, height/4);
+			g.drawRect(x, y , width, height);
 		}
 		
 	}
-	
 	
 	private void init(double a, double b) {
 		tx.setToTranslation(a, b);
@@ -109,7 +94,7 @@ public class Luigi{
 	private Image getImage(String path) {
 		Image tempImage = null;
 		try {
-			URL imageURL = Luigi.class.getResource(path);
+			URL imageURL = DryBones.class.getResource(path);
 			tempImage = Toolkit.getDefaultToolkit().getImage(imageURL);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -7,28 +7,30 @@ import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.net.URL;
 
-public class Lava{
+public class DonutLift{
 	private Image forward; //, backward, left, right; 	
 	private AffineTransform tx;
 	
 	int dir = 0; 					//0-forward, 1-backward, 2-left, 3-right
 	int width, height;				//collision detection (hit box)
+	int lower_b, upper_b;
 	int x, y;						//position of the object
 	int vx, vy;						//movement variables
 	double scaleWidth = 2.0;		//change to scale image
 	double scaleHeight = 2.0; 		//change to scale image
-
-	public Lava() {
+	
+	//A koopa shell that bounces around the lava
+	public DonutLift() {
 		//load the main image (front or forward view)
-		forward 	= getImage("/imgs/"+"Lava.png"); //load the image for lava
+		forward 	= getImage("/imgs/"+"Donut_Lift.png"); //load the image for the Donut Lift
 
 		//alter these
 		//width and height for hit box
-		width = (int) (16*scaleWidth);
+		width = (int) (16*scaleWidth); //14 and 22 are sprite sizes
 		height = (int) (16*scaleHeight);
 		//used for placement on the JFrame
-		x = -width;
-		y = 600;
+		x = 0; //off screen for now
+		y = 300; 
 		
 		vx = 0;
 		vy = 0;
@@ -42,13 +44,14 @@ public class Lava{
 	
 	
 	//2nd constructor - allow setting x and y during construction
-	public Lava(int x, int y) {
+	public DonutLift(int x, int y) {
 		//call the default constructor for all the normal stuff
 		this(); // invokes default constructor
 		
 		//do the specific task for THIS constructor
+		
 		this.x = x;
-		this.y = y;	
+		this.y = y;
 		
 	}
 	
@@ -61,11 +64,9 @@ public class Lava{
 		Graphics2D g2 = (Graphics2D) g;
 		
 		x+=vx;
-		y+=vy;
-		
+		y+=vy;	
 		
 		init(x,y);
-		
 		
 		g2.drawImage(forward, tx, null);
 		
@@ -87,7 +88,7 @@ public class Lava{
 	private Image getImage(String path) {
 		Image tempImage = null;
 		try {
-			URL imageURL = Lava.class.getResource(path);
+			URL imageURL = DonutLift.class.getResource(path);
 			tempImage = Toolkit.getDefaultToolkit().getImage(imageURL);
 		} catch (Exception e) {
 			e.printStackTrace();
