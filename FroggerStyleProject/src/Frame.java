@@ -46,11 +46,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	DonutLift[] donutLifts_1 = new DonutLift[12]; // Horizontally moving donut lifts
 	DonutLift[] donutLifts_2 = new DonutLift[12];
 	
-	StaticTexture[][] bgRows = new StaticTexture[21][19]; 	//All background textures
+	StaticTexture[][] bgRows = new StaticTexture[25][19]; 	//All background textures
 	
 	KoopaShell[] koopaShells = new KoopaShell[1];
+	Door[] enter = new Door[19];
 	
-	
+	Door[] exit = new Door[19];
 	
 
 	public void paint(Graphics g) {
@@ -67,8 +68,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 				}
 				
 				if (l.dangerous) { //Only for "dangerous" textures (lava)
-					if (luigi.getBottomHitbox().intersects(l.getHitbox()) && !locked) {
-//						System.out.println("LAVA DEATH");
+					if (luigi.getBottomHitbox().intersects(l.getHitbox()) && !locked && !luigi.isRiding()) {
+						System.out.println("LAVA DEATH");
 					}
 				}				
 			}
@@ -78,7 +79,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		for (Boo b : row1) { 
 			b.paint(g);
 			if (luigi.getHitbox().intersects(b.getHitbox())) {
-//				System.out.println("Death to Boo");
+				System.out.println("Death to Boo");
 				//TODO: Implement game end and restart
 			}
 		}
@@ -86,7 +87,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		for (Boo b : row2) { 
 			b.paint(g);
 			if (luigi.getHitbox().intersects(b.getHitbox())) {
-//				System.out.println("Death to Boo");
+				System.out.println("Death to Boo");
 				//TODO: Implement game end and restart
 			}
 		}
@@ -94,9 +95,22 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		for (DryBones d : row3) { 
 			d.paint(g);
 			if (luigi.getHitbox().intersects(d.getHitbox())) {
-//				System.out.println("Death to DryBones");
+				System.out.println("Death to DryBones");
 			}
 		}
+		
+		for (Door dr : enter) { 
+			if (luigi.getHitbox().intersects(dr.getHitbox())) { dr.setDoorOpened(true);}
+			else {dr.setDoorOpened(false);}
+			dr.paint(g);
+		}
+		
+		for (Door dr : exit) { 
+			if (luigi.getHitbox().intersects(dr.getHitbox())) { dr.setDoorOpened(true);}
+			else {dr.setDoorOpened(false);}
+			dr.paint(g);
+		}
+		
 		
 		for (KoopaShell ks : koopaShells) {ks.paint(g);}
 		
@@ -156,6 +170,14 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			row3[l] = new DryBones((int) (l*200), 336 - (32*4), 200);
 		}
 		
+		for (int dr = 0; dr < enter.length; dr++) {
+			enter[dr] = new Door((int) (32*dr), 592 + (32*2));
+		}
+		
+		for (int dr = 0; dr < exit.length; dr++) {
+			exit[dr] = new Door((int) (32*dr), 336-(32*9));
+		}
+		
 		for (int d = 0; d < donutLifts_1.length; d++) {
 			int space = 0;
 			if (d>2) {space = 32;}
@@ -181,6 +203,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		for (int j = 0; j < bgRows[0].length; j++) {
 			
+			bgRows[24][j] = new StaticTexture((int) (j*32), 336-(32*11), "/imgs/Stone3.png");
+			bgRows[23][j] = new StaticTexture((int) (j*32), 336-(32*10), "/imgs/Stone3.png");
+			bgRows[22][j] = new StaticTexture((int) (j*32), 336-(32*9), "/imgs/Stone3.png");
 			bgRows[18][j] = new StaticTexture((int) (j*32), 336-(32*8), "/imgs/Stone2.png");
 			
 			bgRows[19][j] = new StaticTexture((int) (j*32), 336-(32*7), "/imgs/Lava.png", true);
@@ -208,11 +233,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			bgRows[11][j] = new StaticTexture((int) (j*32), 496+(32*2), "/imgs/Dark_Grey.png");
 			bgRows[12][j] = new StaticTexture((int) (j*32), 496+(32*3), "/imgs/Dark_Grey.png");
 			bgRows[13][j] = new StaticTexture((int) (j*32), 592 + 32, "/imgs/Dark_Grey.png");
+
 			
-			bgRows[17][j] = new StaticTexture((int) (j*32), 592 + (32*2), "/imgs/Stone2.png");
-			
-			bgRows[14][j] = new StaticTexture((int) (j*32), 592 + (32*4), "/imgs/Grass.png");
-			bgRows[15][j] = new StaticTexture((int) (j*32), 592 + (32*5), "/imgs/Grass.png");
+			bgRows[21][j] = new StaticTexture((int) (j*32), 592 + (32*2), "/imgs/Stone3.png");
+			bgRows[17][j] = new StaticTexture((int) (j*32), 592 + (32*3), "/imgs/Stone3.png");
+			bgRows[14][j] = new StaticTexture((int) (j*32), 592 + (32*4), "/imgs/Stone3.png");
+			bgRows[15][j] = new StaticTexture((int) (j*32), 592 + (32*5), "/imgs/Stone3.png");
 		}
 		
 		

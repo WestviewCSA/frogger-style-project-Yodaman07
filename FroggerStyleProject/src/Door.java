@@ -7,9 +7,10 @@ import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.net.URL;
 
-public class DryBones{
-	private Image forward; //, backward, left, right; 	
+public class Door{
+	private Image closed, open; 	
 	private AffineTransform tx;
+	private boolean doorOpened = false;
 	
 	int dir = 0; 					//0-forward, 1-backward, 2-left, 3-right
 	int width, height;				//collision detection (hit box)
@@ -17,22 +18,21 @@ public class DryBones{
 	int vx, vy;						//movement variables
 	double scaleWidth = 2.0;		//change to scale image
 	double scaleHeight = 2.0; 		//change to scale image
-	int spacing = 100; // default spacing 
 
-	//Boo moves to the right and loops around
-	public DryBones() {
+	public Door() {
 		//load the main image (front or forward view)
-		forward 	= getImage("/imgs/"+"DryBones.png"); //load the image for Boo
+		closed 	= getImage("/imgs/Door_Closed.png"); //load the image
+		open 	= getImage("imgs/Door_Open.png"); //load the image
 
 		//alter these
 		//width and height for hit box
-		width = (int) (16*scaleWidth); //The hitbox should be 16 x 27 (image size is bigger though
-		height = (int) (27*scaleHeight);
+		width = (int) (14*scaleWidth); //14 by 28
+		height = (int) (28*scaleHeight);
 		//used for placement on the JFrame
-		x = width; //off screen for now
-		y = 500; 
+		x = -width;
+		y = 600;
 		
-		vx = -5;
+		vx = 0;
 		vy = 0;
 		
 		tx = AffineTransform.getTranslateInstance(0, 0);
@@ -44,16 +44,18 @@ public class DryBones{
 	
 	
 	//2nd constructor - allow setting x and y during construction
-	public DryBones(int x, int y, int spacing) {
+	public Door(int x, int y) {
 		//call the default constructor for all the normal stuff
 		this(); // invokes default constructor
 		
 		//do the specific task for THIS constructor
 		this.x = x;
 		this.y = y;	
-		this.spacing = spacing;
 		
 	}
+	
+	public void setDoorOpened(boolean status) { doorOpened = status;}
+	public boolean isDoorOpened() { return doorOpened;}
 	
 	public Rectangle getHitbox() {
 		return new Rectangle(x, y, width, height);
@@ -64,24 +66,20 @@ public class DryBones{
 		Graphics2D g2 = (Graphics2D) g;
 		
 		x+=vx;
-		y+=vy;	
+		y+=vy;
 		
-		
-		if (x <= -spacing) {
-			x = Frame.width + spacing + (Frame.width % spacing);
-		}
 		
 		init(x,y);
 		
-		
-		g2.drawImage(forward, tx, null);
+		if (!doorOpened) {g2.drawImage(closed, tx, null);}
+		else if (doorOpened) {g2.drawImage(open, tx, null);}
 		
 		//draw hit box based on x, y, width, height
 		//for collision detection
 		if (Frame.debugging) {
 			//draw hitbox only if debugging
 			g.setColor(Color.green);
-			g.drawRect(x, y , width, height);
+			g.drawRect(x, y, width, height);
 		}
 		
 	}
@@ -94,7 +92,7 @@ public class DryBones{
 	private Image getImage(String path) {
 		Image tempImage = null;
 		try {
-			URL imageURL = DryBones.class.getResource(path);
+			URL imageURL = Door.class.getResource(path);
 			tempImage = Toolkit.getDefaultToolkit().getImage(imageURL);
 		} catch (Exception e) {
 			e.printStackTrace();
