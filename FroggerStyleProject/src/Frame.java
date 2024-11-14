@@ -28,31 +28,25 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	long ellapseTime = 0;
 	Font timeFont = new Font("Courier", Font.BOLD, 70);
 	int level = 0;
-	boolean canLock = false;
-	boolean locked = false;
-	
+	boolean canLock = false; // KoopaShell Logic
+	boolean locked = false; // KoopaShell Logic
 	
 	Font myFont = new Font("Courier", Font.BOLD, 40);
 	SimpleAudioPlayer backgroundMusic = new SimpleAudioPlayer("scifi.wav", false);
 //	Music soundBang = new Music("bang.wav", false);
 //	Music soundHaha = new Music("haha.wav", false);
 	
-	
+	//TODO: Make all class variables private and access w/getters and setters
 	Luigi luigi = new Luigi();
 	
 	Boo[] row1 = new Boo[8]; // For scrolling, make sure you have JUST ENOUGH boos so only 1 is offscreen
-	//A row of boos (moving)
-	Boo[] row2 = new Boo[10];
+	Boo[] row2 = new Boo[10]; 	//A row of boos (moving)
+	DryBones[] row3 = new DryBones[5]; //3rd row of scrolling objects
 	
-	//3rd row of scrolling objects
-	DryBones[] row3 = new DryBones[5];
+	DonutLift[] donutLifts_1 = new DonutLift[12]; // Horizontally moving donut lifts
+	DonutLift[] donutLifts_2 = new DonutLift[12];
 	
-//	DryBones[] row4 = new DryBones[10];
-	
-	DonutLift[] donutLifts = new DonutLift[10];
-	
-	//All background textures
-	StaticTexture[][] bgRows = new StaticTexture[18][19];
+	StaticTexture[][] bgRows = new StaticTexture[21][19]; 	//All background textures
 	
 	KoopaShell[] koopaShells = new KoopaShell[1];
 	
@@ -76,8 +70,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 					if (luigi.getBottomHitbox().intersects(l.getHitbox()) && !locked) {
 //						System.out.println("LAVA DEATH");
 					}
-				}
-				
+				}				
 			}
 		} //Paint background first
 		
@@ -106,8 +99,22 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		}
 		
 		for (KoopaShell ks : koopaShells) {ks.paint(g);}
-//		for (DonutLift ds : donutLifts) {ds.paint(g);}
 		
+		int ridingAny = 0;
+		for (DonutLift dl : donutLifts_1) {
+			if (luigi.getBottomHitbox().intersects(dl.getHitbox())) {//If luigi is on the lift, move luigi as well
+				ridingAny++;
+				luigi.setRiding(true);
+			}
+			dl.paint(g);
+		}
+		
+		for (DonutLift dl : donutLifts_2) {
+			if (luigi.getBottomHitbox().intersects(dl.getHitbox())) { luigi.setRiding(true); ridingAny++;}
+			dl.paint(g);
+		}
+		
+		if (ridingAny==0) {luigi.setRiding(false);}
 		
 		
 		if (locked) {
@@ -129,16 +136,13 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		f.setSize(new Dimension(width, height));
 		f.setBackground(Color.white);
 		f.add(this);
-		f.setResizable(false);
+		f.setResizable(true);
  		f.addMouseListener(this);
 		f.addKeyListener(this);
 	
 //		backgroundMusic.play();
 
-		/*
-		 * Setup any 1D array here! - create the objects that go in them ;) 
-		 */
-		
+		// Setup any 1D array here! - create the objects that go in them ;) 
 
 		for (int i = 0; i < row1.length; i++) {
 			row1[i] = new Boo((int) (i*110), 592, 110);
@@ -152,13 +156,35 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			row3[l] = new DryBones((int) (l*200), 336 - (32*4), 200);
 		}
 		
+		for (int d = 0; d < donutLifts_1.length; d++) {
+			int space = 0;
+			if (d>2) {space = 32;}
+			if (d>3) {space = 64;}
+			if (d>4) {space = 128;}
+			if (d>6) {space = 144;}
+			if (d>9) {space = 176;}
+			if (d>10) {space = 208;}
+			donutLifts_1[d] = new DonutLift(d*32+space,336-(32*6));	
+		}
+		
+		for (int d = 0; d < donutLifts_2.length; d++) { // bottom row
+			int space = 0;
+			if (d>2) {space = 32;}
+			if (d>4) {space = 64;}
+			if (d>7) {space = 128;}
+			if (d>8) {space = 144;}
+			if (d>10) {space = 176;}
+			if (d>12) {space = 208;}
+			donutLifts_2[d] = new DonutLift(d*32+50+space,336-(32*7));
+		}
+
 		
 		for (int j = 0; j < bgRows[0].length; j++) {
 			
-			bgRows[18][j] = new StaticTexture((int) (j*32), 336-(32*5), "/imgs/Stone2.png");
+			bgRows[18][j] = new StaticTexture((int) (j*32), 336-(32*8), "/imgs/Stone2.png");
 			
-			bgRows[19][j] = new StaticTexture((int) (j*32), 336-(32*5), "/imgs/Lava.png");
-			bgRows[20][j] = new StaticTexture((int) (j*32), 336-(32*5), "/imgs/Lava.png");
+			bgRows[19][j] = new StaticTexture((int) (j*32), 336-(32*7), "/imgs/Lava.png", true);
+			bgRows[20][j] = new StaticTexture((int) (j*32), 336-(32*6), "/imgs/Lava.png", true);
 			
 			
 			bgRows[16][j] = new StaticTexture((int) (j*32), 336-(32*5), "/imgs/Stone2.png");
@@ -187,18 +213,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			
 			bgRows[14][j] = new StaticTexture((int) (j*32), 592 + (32*4), "/imgs/Grass.png");
 			bgRows[15][j] = new StaticTexture((int) (j*32), 592 + (32*5), "/imgs/Grass.png");
-			
-			
-			
-			
-//			bgRows[7][j] = new StaticTexture((int) (j*32), 400+64, "/imgs/Oak_Wood.png");
 		}
 		
 		
 		for (int k = 0; k < koopaShells.length; k++) {
 			koopaShells[k] = new KoopaShell(400, 336);
 		}
-		
 		
 		
 		//the cursor image must be outside of the src folder
@@ -273,7 +293,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 				break;
 			case(68): // D
 				if (locked) {break;}
-				luigi.vx = 3;
+				luigi.vx = 3;				
 				break;
 			case (32):
 				//Mounting and dismounting
@@ -293,7 +313,6 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 				}
 				
 				break;
-				//Implement locking mechanic
 		}
 		
 	}

@@ -32,7 +32,7 @@ public class DonutLift{
 		x = 0; //off screen for now
 		y = 300; 
 		
-		vx = 0;
+		vx = 1;
 		vy = 0;
 		
 		tx = AffineTransform.getTranslateInstance(0, 0);
@@ -41,7 +41,6 @@ public class DonutLift{
 									//use your variables
 		
 	}
-	
 	
 	//2nd constructor - allow setting x and y during construction
 	public DonutLift(int x, int y) {
@@ -65,6 +64,8 @@ public class DonutLift{
 		
 		x+=vx;
 		y+=vy;	
+		
+		if (x >= Frame.width) { x = -32;}
 		
 		init(x,y);
 		

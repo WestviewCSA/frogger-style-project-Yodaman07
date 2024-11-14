@@ -10,6 +10,7 @@ import java.net.URL;
 public class Luigi{
 	private Image forward; //, backward, left, right; 	
 	private AffineTransform tx;
+	private boolean riding = false;
 	
 	int dir = 0; 					//0-forward, 1-backward, 2-left, 3-right
 	int width, height;				//collision detection (hit box)
@@ -17,6 +18,7 @@ public class Luigi{
 	int vx, vy;						//movement variables
 	double scaleWidth = 2.0;		//change to scale image
 	double scaleHeight = 2.0; 		//change to scale image
+	
 
 	public Luigi() {
 		//load the main image (front or forward view)
@@ -65,9 +67,10 @@ public class Luigi{
 	public void paint(Graphics g) {
 		//these are the 2 lines of code needed draw an image on the screen
 		Graphics2D g2 = (Graphics2D) g;
-		
-		x+=vx;
+		if (riding) {x+=vx+1;}
+		else {x+=vx;}
 		y+=vy;
+		
 		if (x >= Frame.width-28) { // 14 is player width
 			x = Frame.width-28;
 		}else if (x <= 0){
@@ -100,6 +103,8 @@ public class Luigi{
 		
 	}
 	
+	public boolean isRiding() { return riding;}
+	public void setRiding(boolean r) { riding = r;}
 	
 	private void init(double a, double b) {
 		tx.setToTranslation(a, b);
