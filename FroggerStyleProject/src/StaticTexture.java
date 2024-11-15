@@ -8,24 +8,20 @@ import java.awt.geom.AffineTransform;
 import java.net.URL;
 
 public class StaticTexture{
-	private Image forward; //, backward, left, right; 	
+	private Image forward; 	
 	private AffineTransform tx;
 	
-	int dir = 0; 					//0-forward, 1-backward, 2-left, 3-right
-	int width, height;				//collision detection (hit box)
-	int x, y;						//position of the object
-	int vx, vy;						//movement variables
-	double scaleWidth = 2.0;		//change to scale image
-	double scaleHeight = 2.0; 		//change to scale image
-	boolean dangerous = false;
+	private int width, height;				//collision detection (hit box)
+	private int x, y;						//position of the object
+	private int vx, vy;						//movement variables
+	private double scaleWidth = 2.0;		//change to scale image
+	private double scaleHeight = 2.0; 		//change to scale image
+	private boolean dangerous = false;
 
 	public StaticTexture(String path) {
-		//load the main image (front or forward view)
 		forward 	= getImage(path); //load the image
 
-		//alter these
-		//width and height for hit box
-		width = (int) (16*scaleWidth);
+		width = (int) (16*scaleWidth); // All static textures are 16x16
 		height = (int) (16*scaleHeight);
 		//used for placement on the JFrame
 		x = -width;
@@ -35,10 +31,7 @@ public class StaticTexture{
 		vy = 0;
 		
 		tx = AffineTransform.getTranslateInstance(0, 0);
-		
 		init(x, y); 				//initialize the location of the image
-									//use your variables
-		
 	}
 	
 	
@@ -50,7 +43,6 @@ public class StaticTexture{
 		//do the specific task for THIS constructor
 		this.x = x;
 		this.y = y;	
-		
 	}
 	
 	//3nd constructor - allow for setting texture danger (does the player die when hitting?
@@ -65,10 +57,9 @@ public class StaticTexture{
 		
 	}
 	
-	public Rectangle getHitbox() {
-		return new Rectangle(x, y, width, height);
-	}
-
+	public Rectangle getHitbox() { return new Rectangle(x, y, width, height); }
+	public boolean isDangerous() {return dangerous;}
+	
 	public void paint(Graphics g) {
 		//these are the 2 lines of code needed draw an image on the screen
 		Graphics2D g2 = (Graphics2D) g;
@@ -76,10 +67,7 @@ public class StaticTexture{
 		x+=vx;
 		y+=vy;
 		
-		
 		init(x,y);
-		
-		
 		g2.drawImage(forward, tx, null);
 		
 		//draw hit box based on x, y, width, height
@@ -107,5 +95,4 @@ public class StaticTexture{
 		}
 		return tempImage;
 	}
-
 }

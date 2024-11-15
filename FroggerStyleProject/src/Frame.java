@@ -36,7 +36,6 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 //	Music soundBang = new Music("bang.wav", false);
 //	Music soundHaha = new Music("haha.wav", false);
 	
-	//TODO: Make all class variables private and access w/getters and setters
 	Luigi luigi = new Luigi();
 	
 	Boo[] row1 = new Boo[8]; // For scrolling, make sure you have JUST ENOUGH boos so only 1 is offscreen
@@ -67,7 +66,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 					}
 				}
 				
-				if (l.dangerous) { //Only for "dangerous" textures (lava)
+				if (l.isDangerous()) { //Only for "dangerous" textures (lava)
 					if (luigi.getBottomHitbox().intersects(l.getHitbox()) && !locked && !luigi.isRiding()) {
 						System.out.println("LAVA DEATH");
 					}
@@ -137,8 +136,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		
 		if (locked) {
-			luigi.x = koopaShells[0].x + 2; // Luigi width is 14 while other textures are 16; 16-14 = 2
-			luigi.y = koopaShells[0].y - 25; // Arbitrary number that makes Luigi Look good on the shell
+			luigi.setX(koopaShells[0].getX() + 2); // Luigi width is 14 while other textures are 16; 16-14 = 2
+			luigi.setY(koopaShells[0].getY() - 25); // Arbitrary number that makes Luigi Look good on the shell
 		}
 		
 		luigi.paint(g);
@@ -312,19 +311,19 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		switch (arg0.getKeyCode()) {
 			case (87): // W
 				if (locked) {break;}
-				luigi.vy = -3;
+				luigi.setVY(-3);
 				break;
 			case(65): // A
 				if (locked) {break;}
-				luigi.vx = -3;
+				luigi.setVX(-3);
 				break;
 			case(83): // S
 				if (locked) {break;}
-				luigi.vy = 3;
+				luigi.setVY(3);
 				break;
 			case(68): // D
 				if (locked) {break;}
-				luigi.vx = 3;				
+				luigi.setVX(3);				
 				break;
 			case (32):
 				//Mounting and dismounting
@@ -339,7 +338,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 					//Dismounting
 					System.out.println("Dismount");
 					locked = false;
-					luigi.y -= 30;
+					luigi.setY(luigi.getY() - 30);
 					break;
 				}
 				
@@ -353,16 +352,16 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		// TODO Auto-generated method stub
 		switch (arg0.getKeyCode()) {
 		case (87):
-			luigi.vy = 0;
+			luigi.setVY(0);
 			break;
 		case(65):
-			luigi.vx = 0;
+			luigi.setVX(0);
 			break;
 		case(83):
-			luigi.vy = 0;
+			luigi.setVY(0);
 			break;
 		case(68):
-			luigi.vx = 0;
+			luigi.setVX(0);
 			break;
 		}
 	}

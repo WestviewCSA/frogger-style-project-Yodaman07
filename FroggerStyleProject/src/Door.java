@@ -12,19 +12,17 @@ public class Door{
 	private AffineTransform tx;
 	private boolean doorOpened = false;
 	
-	int dir = 0; 					//0-forward, 1-backward, 2-left, 3-right
-	int width, height;				//collision detection (hit box)
-	int x, y;						//position of the object
-	int vx, vy;						//movement variables
-	double scaleWidth = 2.0;		//change to scale image
-	double scaleHeight = 2.0; 		//change to scale image
+	private int width, height;				//collision detection (hit box)
+	private int x, y;						//position of the object
+	private int vx, vy;						//movement variables
+	private double scaleWidth = 2.0;		//change to scale image
+	private double scaleHeight = 2.0; 		//change to scale image
 
 	public Door() {
-		//load the main image (front or forward view)
+		//loads the two door state images
 		closed 	= getImage("/imgs/Door_Closed.png"); //load the image
 		open 	= getImage("imgs/Door_Open.png"); //load the image
 
-		//alter these
 		//width and height for hit box
 		width = (int) (14*scaleWidth); //14 by 28
 		height = (int) (28*scaleHeight);
@@ -37,9 +35,7 @@ public class Door{
 		
 		tx = AffineTransform.getTranslateInstance(0, 0);
 		
-		init(x, y); 				//initialize the location of the image
-									//use your variables
-		
+		init(x, y); 				//initialize the location of the image		
 	}
 	
 	
@@ -50,8 +46,7 @@ public class Door{
 		
 		//do the specific task for THIS constructor
 		this.x = x;
-		this.y = y;	
-		
+		this.y = y;		
 	}
 	
 	public void setDoorOpened(boolean status) { doorOpened = status;}
@@ -67,7 +62,6 @@ public class Door{
 		
 		x+=vx;
 		y+=vy;
-		
 		
 		init(x,y);
 		
@@ -99,5 +93,4 @@ public class Door{
 		}
 		return tempImage;
 	}
-
 }

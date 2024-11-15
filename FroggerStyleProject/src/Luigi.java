@@ -8,39 +8,33 @@ import java.awt.geom.AffineTransform;
 import java.net.URL;
 
 public class Luigi{
-	private Image forward; //, backward, left, right; 	
+	private Image forward; 	
 	private AffineTransform tx;
 	private boolean riding = false;
 	
-	int dir = 0; 					//0-forward, 1-backward, 2-left, 3-right
-	int width, height;				//collision detection (hit box)
-	int x, y;						//position of the object
-	int vx, vy;						//movement variables
-	double scaleWidth = 2.0;		//change to scale image
-	double scaleHeight = 2.0; 		//change to scale image
+	private int dir = 0; 					//0-forward, 1-backward, 2-left, 3-right
+	private int width, height;				//collision detection (hit box)
+	private int x, y;						//position of the object
+	private int vx, vy;						//movement variables
+	private double scaleWidth = 2.0;		//change to scale image
+	private double scaleHeight = 2.0; 		//change to scale image
 	
 
 	public Luigi() {
-		//load the main image (front or forward view)
 		forward 	= getImage("/imgs/"+"LuigiSMW.png"); //load the image for Luigi
-
-		//alter these
+		
 		//width and height for hit box
-		width = (int) (14*scaleWidth);
+		width = (int) (14*scaleWidth); // 14x22 texture
 		height = (int) (22*scaleHeight);
 		//used for placement on the JFrame
 		x = 600/2 - width/2;
 		y = 800-(height*2)+15; //not sure about the + 15 but it works?
 		
-		//if your movement will not be "hopping base
 		vx = 0;
 		vy = 0;
 		
 		tx = AffineTransform.getTranslateInstance(0, 0);
-		
 		init(x, y); 				//initialize the location of the image
-									//use your variables
-		
 	}
 	
 	
@@ -51,18 +45,12 @@ public class Luigi{
 		
 		//do the specific task for THIS constructor
 		this.x = x;
-		this.y = y;	
-		
+		this.y = y;			
 	}
 	
-	public Rectangle getBottomHitbox(){
-		Rectangle bottomHitbox = new Rectangle(x, y+(3*height/4), width, height/4);
-		return bottomHitbox;
-	}
+	public Rectangle getBottomHitbox(){ return new Rectangle(x, y+(3*height/4), width, height/4);}//Bottom forth of Luigi
 	
-	public Rectangle getHitbox() {
-		return new Rectangle(x, y, width, height);
-	}
+	public Rectangle getHitbox() { return new Rectangle(x, y, width, height);}
 
 	public void paint(Graphics g) {
 		//these are the 2 lines of code needed draw an image on the screen
@@ -83,11 +71,7 @@ public class Luigi{
 			y = 0;
 		}
 		
-		//for infinite scrolling - teleport to the other side
-		//once it leaves the other side!
-		
 		init(x,y);
-		
 		g2.drawImage(forward, tx, null);
 		
 		//draw hit box based on x, y, width, height
@@ -102,6 +86,13 @@ public class Luigi{
 		}
 		
 	}
+	public int getX() {return x;}
+	public int getY() {return y;}
+	public void setX(int x) {this.x = x;}
+	public void setY(int y) {this.y = y;}
+	
+	public void setVX(int vx) {this.vx = vx;}
+	public void setVY(int vy) {this.vy = vy;}
 	
 	public boolean isRiding() { return riding;}
 	public void setRiding(boolean r) { riding = r;}

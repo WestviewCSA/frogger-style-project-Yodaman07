@@ -13,24 +13,20 @@ public class DonutLift{
 	private int timer = 0;
 	private boolean timerOn = false;
 	
-	int dir = 0; 					//0-forward, 1-backward, 2-left, 3-right
-	int width, height;				//collision detection (hit box)
-	int lower_b, upper_b;
-	int x, y;						//position of the object
-	int vx, vy;						//movement variables
-	double scaleWidth = 2.0;		//change to scale image
-	double scaleHeight = 2.0; 		//change to scale image
+	private int width, height;				//collision detection (hit box)
+	private int x, y;						//position of the object
+	private int vx, vy;						//movement variables
+	private double scaleWidth = 2.0;		//change to scale image
+	private double scaleHeight = 2.0; 		//change to scale image
 	
-	
-	//A koopa shell that bounces around the lava
+
 	public DonutLift() {
-		//load the main image (front or forward view)
+		//loads all states of the donut lift
 		for (int i = 1; i <= stages.length; i++) {
 			stages[i-1] = getImage("/imgs/"+"Donut_Lift_" + i + ".png");
 		}
-		//alter these
-		//width and height for hit box
-		width = (int) (16*scaleWidth); //14 and 22 are sprite sizes
+		
+		width = (int) (16*scaleWidth); //16x16 sprite
 		height = (int) (16*scaleHeight);
 		//used for placement on the JFrame
 		x = 0; //off screen for now
@@ -42,8 +38,6 @@ public class DonutLift{
 		tx = AffineTransform.getTranslateInstance(0, 0);
 		
 		init(x, y); 				//initialize the location of the image
-									//use your variables
-		
 	}
 	
 	//2nd constructor - allow setting x and y during construction
@@ -52,24 +46,19 @@ public class DonutLift{
 		this(); // invokes default constructor
 		
 		//do the specific task for THIS constructor
-		
 		this.x = x;
 		this.y = y;
-		
 	}
 	
 	public void setTimer(boolean state) {timerOn = state;}
 	public boolean getTimer() {return timerOn;}
 	
-	public Rectangle getHitbox() {
-		return new Rectangle(x, y, width, height);
-	}
+	public Rectangle getHitbox() { return new Rectangle(x, y, width, height);}
 
 	public void paint(Graphics g) {
 		//these are the 2 lines of code needed draw an image on the screen
 		Graphics2D g2 = (Graphics2D) g;
 		if (timerOn) {
-			System.out.println(timer);
 			timer++;
 			if (timer == 120) {timer =0;}
 		} else {timer = 0;}
@@ -109,5 +98,4 @@ public class DonutLift{
 		}
 		return tempImage;
 	}
-
 }

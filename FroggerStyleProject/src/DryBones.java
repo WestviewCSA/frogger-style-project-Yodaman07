@@ -8,25 +8,21 @@ import java.awt.geom.AffineTransform;
 import java.net.URL;
 
 public class DryBones{
-	private Image forward; //, backward, left, right; 	
+	private Image forward; 	
 	private AffineTransform tx;
 	
-	int dir = 0; 					//0-forward, 1-backward, 2-left, 3-right
-	int width, height;				//collision detection (hit box)
-	int x, y;						//position of the object
-	int vx, vy;						//movement variables
-	double scaleWidth = 2.0;		//change to scale image
-	double scaleHeight = 2.0; 		//change to scale image
-	int spacing = 100; // default spacing 
+	private int width, height;				//collision detection (hit box)
+	private int x, y;						//position of the object
+	private int vx, vy;						//movement variables
+	private double scaleWidth = 2.0;		//change to scale image
+	private double scaleHeight = 2.0; 		//change to scale image
+	private int spacing = 100; // default spacing 
 
-	//Boo moves to the right and loops around
 	public DryBones() {
-		//load the main image (front or forward view)
-		forward 	= getImage("/imgs/"+"DryBones.png"); //load the image for Boo
-
-		//alter these
+		forward 	= getImage("/imgs/"+"DryBones.png"); //load the image for the DryBones
+		
 		//width and height for hit box
-		width = (int) (16*scaleWidth); //The hitbox should be 16 x 27 (image size is bigger though
+		width = (int) (16*scaleWidth); //The hitbox should be 16 x 27
 		height = (int) (27*scaleHeight);
 		//used for placement on the JFrame
 		x = width; //off screen for now
@@ -38,8 +34,6 @@ public class DryBones{
 		tx = AffineTransform.getTranslateInstance(0, 0);
 		
 		init(x, y); 				//initialize the location of the image
-									//use your variables
-		
 	}
 	
 	
@@ -55,9 +49,7 @@ public class DryBones{
 		
 	}
 	
-	public Rectangle getHitbox() {
-		return new Rectangle(x, y, width, height);
-	}
+	public Rectangle getHitbox() { return new Rectangle(x, y, width, height); }
 
 	public void paint(Graphics g) {
 		//these are the 2 lines of code needed draw an image on the screen
@@ -66,14 +58,11 @@ public class DryBones{
 		x+=vx;
 		y+=vy;	
 		
-		
 		if (x <= -spacing) {
 			x = Frame.width + spacing + (Frame.width % spacing);
 		}
 		
 		init(x,y);
-		
-		
 		g2.drawImage(forward, tx, null);
 		
 		//draw hit box based on x, y, width, height
@@ -101,5 +90,4 @@ public class DryBones{
 		}
 		return tempImage;
 	}
-
 }
