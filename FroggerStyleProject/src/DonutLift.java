@@ -8,8 +8,10 @@ import java.awt.geom.AffineTransform;
 import java.net.URL;
 
 public class DonutLift{
-	private Image forward; //, backward, left, right; 	
+	private Image[] stages = new Image[6];  	
 	private AffineTransform tx;
+	private int timer = 0;
+	private boolean timerOn = false;
 	
 	int dir = 0; 					//0-forward, 1-backward, 2-left, 3-right
 	int width, height;				//collision detection (hit box)
@@ -19,11 +21,13 @@ public class DonutLift{
 	double scaleWidth = 2.0;		//change to scale image
 	double scaleHeight = 2.0; 		//change to scale image
 	
+	
 	//A koopa shell that bounces around the lava
 	public DonutLift() {
 		//load the main image (front or forward view)
-		forward 	= getImage("/imgs/"+"Donut_Lift.png"); //load the image for the Donut Lift
-
+		for (int i = 1; i <= stages.length; i++) {
+			stages[i-1] = getImage("/imgs/"+"Donut_Lift_" + i + ".png");
+		}
 		//alter these
 		//width and height for hit box
 		width = (int) (16*scaleWidth); //14 and 22 are sprite sizes
@@ -54,6 +58,9 @@ public class DonutLift{
 		
 	}
 	
+	public void setTimer(boolean state) {timerOn = state;}
+	public boolean getTimer() {return timerOn;}
+	
 	public Rectangle getHitbox() {
 		return new Rectangle(x, y, width, height);
 	}
@@ -61,6 +68,11 @@ public class DonutLift{
 	public void paint(Graphics g) {
 		//these are the 2 lines of code needed draw an image on the screen
 		Graphics2D g2 = (Graphics2D) g;
+		if (timerOn) {
+			System.out.println(timer);
+			timer++;
+			if (timer == 120) {timer =0;}
+		} else {timer = 0;}
 		
 		x+=vx;
 		y+=vy;	
@@ -69,7 +81,7 @@ public class DonutLift{
 		
 		init(x,y);
 		
-		g2.drawImage(forward, tx, null);
+		g2.drawImage(stages[timer/20], tx, null);
 		
 		//draw hit box based on x, y, width, height
 		//for collision detection
@@ -85,6 +97,7 @@ public class DonutLift{
 		tx.setToTranslation(a, b);
 		tx.scale(scaleWidth, scaleHeight);
 	}
+	
 
 	private Image getImage(String path) {
 		Image tempImage = null;

@@ -117,18 +117,23 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		int ridingAny = 0;
 		for (DonutLift dl : donutLifts_1) {
 			if (luigi.getBottomHitbox().intersects(dl.getHitbox())) {//If luigi is on the lift, move luigi as well
-				ridingAny++;
 				luigi.setRiding(true);
-			}
+				ridingAny++;
+				dl.setTimer(true);
+			}else {dl.setTimer(false);}
 			dl.paint(g);
 		}
 		
 		for (DonutLift dl : donutLifts_2) {
-			if (luigi.getBottomHitbox().intersects(dl.getHitbox())) { luigi.setRiding(true); ridingAny++;}
+			if (luigi.getBottomHitbox().intersects(dl.getHitbox())) { 
+				luigi.setRiding(true); 
+				ridingAny++; 
+				dl.setTimer(true);
+			}else {dl.setTimer(false);}
 			dl.paint(g);
 		}
 		
-		if (ridingAny==0) {luigi.setRiding(false);}
+		if (ridingAny==0) {luigi.setRiding(false); }
 		
 		
 		if (locked) {
