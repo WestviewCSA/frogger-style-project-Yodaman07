@@ -60,15 +60,18 @@ public class DonutLift{
 		Graphics2D g2 = (Graphics2D) g;
 		if (timerOn) {
 			timer++;
-			if (timer == 120) {timer =0;}
-		} else {timer = 0;}
+			if (timer == 120) {timer =0; width = (int) (16*scaleWidth); height = (int) (16*scaleHeight);}
+		} else {timer = 0; width = (int) (16*scaleWidth); height = (int) (16*scaleHeight);}
 		
+		if (timer/20 == 5) { width = 0;height = 0;}
 		x+=vx;
 		y+=vy;	
 		
 		if (x >= Frame.width) { x = -32;}
 		
 		init(x,y);
+		
+		
 		
 		g2.drawImage(stages[timer/20], tx, null);
 		

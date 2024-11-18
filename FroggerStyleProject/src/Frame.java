@@ -23,15 +23,15 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	public static int width = 600;
 	public static int height = 800;
 	
-	//Timer related variables
-	int waveTimer = 5; //each wave of enemies is 20s
-	long ellapseTime = 0;
-	Font timeFont = new Font("Courier", Font.BOLD, 70);
-	int level = 0;
+	boolean gameOver = false;
+	String deathMsg = "";
+
+	boolean a = false;
 	boolean canLock = false; // KoopaShell Logic
 	boolean locked = false; // KoopaShell Logic
 	
-	Font myFont = new Font("Courier", Font.BOLD, 40);
+	Font myFont = new Font("Courier", Font.BOLD, 30);
+	Font otherFont = new Font("Courier", Font.BOLD, 20);
 	SimpleAudioPlayer backgroundMusic = new SimpleAudioPlayer("scifi.wav", false);
 //	Music soundBang = new Music("bang.wav", false);
 //	Music soundHaha = new Music("haha.wav", false);
@@ -55,63 +55,10 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 
 	public void paint(Graphics g) {
 		super.paintComponent(g);
-		
 		for (int i = 0; i < bgRows.length; i++) {
-			for (StaticTexture l : bgRows[i]) { 
-				l.paint(g);
-				
-				if (i == 0) { // Logic that only applies to the bottom lava row
-					if (( luigi.getHitbox().intersects(l.getHitbox()) && luigi.getHitbox().intersects(koopaShells[0].getHitbox())) && !luigi.getBottomHitbox().intersects(l.getHitbox())) {
-						if (!locked) { canLock = true; }
-					}
-				}
-				
-				if (l.isDangerous()) { //Only for "dangerous" textures (lava)
-					if (luigi.getBottomHitbox().intersects(l.getHitbox()) && !locked && !luigi.isRiding()) {
-						System.out.println("LAVA DEATH");
-					}
-				}				
-			}
-		} //Paint background first
+			for (StaticTexture l : bgRows[i]) {  l.paint(g); }
+		} // Paints Background Textures NEEDS TO BE FIRST
 		
-		//paint the other objects on the screen
-		for (Boo b : row1) { 
-			b.paint(g);
-			if (luigi.getHitbox().intersects(b.getHitbox())) {
-				System.out.println("Death to Boo");
-				//TODO: Implement game end and restart
-			}
-		}
-		
-		for (Boo b : row2) { 
-			b.paint(g);
-			if (luigi.getHitbox().intersects(b.getHitbox())) {
-				System.out.println("Death to Boo");
-				//TODO: Implement game end and restart
-			}
-		}
-		
-		for (DryBones d : row3) { 
-			d.paint(g);
-			if (luigi.getHitbox().intersects(d.getHitbox())) {
-				System.out.println("Death to DryBones");
-			}
-		}
-		
-		for (Door dr : enter) { 
-			if (luigi.getHitbox().intersects(dr.getHitbox())) { dr.setDoorOpened(true);}
-			else {dr.setDoorOpened(false);}
-			dr.paint(g);
-		}
-		
-		for (Door dr : exit) { 
-			if (luigi.getHitbox().intersects(dr.getHitbox())) { dr.setDoorOpened(true);}
-			else {dr.setDoorOpened(false);}
-			dr.paint(g);
-		}
-		
-		
-		for (KoopaShell ks : koopaShells) {ks.paint(g);}
 		
 		int ridingAny = 0;
 		for (DonutLift dl : donutLifts_1) {
@@ -135,13 +82,103 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		if (ridingAny==0) {luigi.setRiding(false); }
 		
 		
+		for (int i = 0; i < bgRows.length; i++) {
+			for (StaticTexture l : bgRows[i]) { 
+				
+				if (i == 0) { // Logic that only applies to the bottom lava row
+					if (( luigi.getHitbox().intersects(l.getHitbox()) && luigi.getHitbox().intersects(koopaShells[0].getHitbox())) && !luigi.getBottomHitbox().intersects(l.getHitbox())) {
+						if (!locked) { canLock = true; }
+					}
+				}
+				
+				if (l.isDangerous()) { //Only for "dangerous" textures (lava)
+					if (luigi.getBottomHitbox().intersects(l.getHitbox()) && !locked && !luigi.isRiding()) {
+						gameOver = true; deathMsg = "Death To Lava";
+					}
+				}				
+			}
+		} //Paint background first
+		
+		//paint the other objects on the screen
+		for (Boo b : row1) { 
+			b.paint(g);
+			if (luigi.getHitbox().intersects(b.getHitbox())) {
+				gameOver = true; deathMsg = "Death To Boo";
+			}
+		}
+		
+		for (Boo b : row2) { 
+			b.paint(g);
+			if (luigi.getHitbox().intersects(b.getHitbox())) {
+				gameOver = true; deathMsg = "Death To Boo";
+			}
+		}
+		
+		for (DryBones d : row3) { 
+			d.paint(g);
+			if (luigi.getHitbox().intersects(d.getHitbox())) {
+				gameOver = true; deathMsg = "Death To DryBones";
+			}
+		}
+		
+		for (Door dr : enter) { 
+			if (luigi.getHitbox().intersects(dr.getHitbox())) { dr.setDoorOpened(true);}
+			else {dr.setDoorOpened(false);}
+			dr.paint(g);
+		}
+		
+		for (Door dr : exit) { 
+			if (luigi.getHitbox().intersects(dr.getHitbox())) { dr.setDoorOpened(true);}
+			else {dr.setDoorOpened(false);}
+			dr.paint(g);
+		}
+		
+		
+		for (KoopaShell ks : koopaShells) {ks.paint(g);}
+		
+		
 		if (locked) {
 			luigi.setX(koopaShells[0].getX() + 2); // Luigi width is 14 while other textures are 16; 16-14 = 2
 			luigi.setY(koopaShells[0].getY() - 25); // Arbitrary number that makes Luigi Look good on the shell
 		}
 		
 		luigi.paint(g);
-
+		
+		if (gameOver && !luigi.isCompleted()) { this.gameOver(deathMsg, g);}
+		if (luigi.isCompleted()) {this.completed(g);}
+	}
+	
+	public void gameOver(String deathText, Graphics g) {
+		g.setFont(myFont);
+		
+		g.setColor(new Color(0, 0, 0, 100));
+		g.fillRect(0, 0, width, height);
+		g.setColor(new Color(255, 255, 255));
+		g.fillRect(width/4, height/4, width/2, 300);
+		g.setColor(new Color (0, 0, 0));
+		if (deathText.equals("Death To DryBones")){ g.drawString(deathText, width/4 , height/4+50);}
+		else {g.drawString(deathText, width/4 + 40 , height/4+50);}
+		g.setFont(otherFont);
+		g.drawString("Press 'p' to play again", width/4 + 15 , height/4+150);
+	}
+	
+	public void completed(Graphics g) {
+		g.setFont(myFont);
+		
+		g.setColor(new Color(0, 0, 0, 100));
+		g.fillRect(0, 0, width, height);
+		g.setColor(new Color (0, 60, 0));
+		g.fillRect(width/4, height/4, width/2, 300);
+		g.setColor(new Color(255, 255, 255));
+		
+		g.drawString("Completed Stage!", width/4+5 , height/4+50);
+		g.setFont(otherFont);
+		g.drawString("Press 'p' to play again", width/4 + 15 , height/4+150);
+	}
+	
+	public void reset() {
+		gameOver = false;
+		luigi = new Luigi();
 	}
 	
 	public static void main(String[] arg) {
@@ -306,26 +343,27 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 //		 TODO Auto-generated method stub
-//		System.out.println(arg0.getKeyCode());
 		
+
 		switch (arg0.getKeyCode()) {
 			case (87): // W
-				if (locked) {break;}
+				if (locked || gameOver) {break;}
 				luigi.setVY(-3);
 				break;
 			case(65): // A
-				if (locked) {break;}
+				if (locked || gameOver) {break;}
 				luigi.setVX(-3);
 				break;
 			case(83): // S
-				if (locked) {break;}
+				if (locked || gameOver) {break;}
 				luigi.setVY(3);
 				break;
 			case(68): // D
-				if (locked) {break;}
+				if (locked || gameOver) {break;}
 				luigi.setVX(3);				
 				break;
 			case (32):
+				if (gameOver) {break;}
 				//Mounting and dismounting
 				if (canLock) {
 					//Mounting
@@ -343,6 +381,11 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 				}
 				
 				break;
+			case (80): //P
+				if (gameOver || luigi.isCompleted()) {
+					this.reset();
+					break;
+				}
 		}
 		
 	}

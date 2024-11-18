@@ -29,7 +29,6 @@ public class Luigi{
 		//used for placement on the JFrame
 		x = 600/2 - width/2;
 		y = 800-(height*2)+15; //not sure about the + 15 but it works?
-		
 		vx = 0;
 		vy = 0;
 		
@@ -51,7 +50,7 @@ public class Luigi{
 	public Rectangle getBottomHitbox(){ return new Rectangle(x, y+(3*height/4), width, height/4);}//Bottom forth of Luigi
 	
 	public Rectangle getHitbox() { return new Rectangle(x, y, width, height);}
-
+	public boolean isCompleted() {return y<=50;}
 	public void paint(Graphics g) {
 		//these are the 2 lines of code needed draw an image on the screen
 		Graphics2D g2 = (Graphics2D) g;
