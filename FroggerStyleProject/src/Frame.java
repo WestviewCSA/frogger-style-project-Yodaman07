@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -29,6 +30,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	boolean a = false;
 	boolean canLock = false; // KoopaShell Logic
 	boolean locked = false; // KoopaShell Logic
+	public int ridingAny;
 	
 	Font myFont = new Font("Courier", Font.BOLD, 30);
 	Font otherFont = new Font("Courier", Font.BOLD, 20);
@@ -41,9 +43,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	Boo[] row1 = new Boo[8]; // For scrolling, make sure you have JUST ENOUGH boos so only 1 is offscreen
 	Boo[] row2 = new Boo[10]; 	//A row of boos (moving)
 	DryBones[] row3 = new DryBones[5]; //3rd row of scrolling objects
-	
-	DonutLift[] donutLifts_1 = new DonutLift[12]; // Horizontally moving donut lifts
-	DonutLift[] donutLifts_2 = new DonutLift[12];
+		
+	ArrayList<DonutLift> newLifts_1 = new ArrayList<DonutLift>(); // Horizontally moving donut lifts
+	ArrayList<DonutLift> newLifts_2 = new ArrayList<DonutLift>();
 	
 	StaticTexture[][] bgRows = new StaticTexture[25][19]; 	//All background textures
 	
@@ -59,25 +61,28 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			for (StaticTexture l : bgRows[i]) {  l.paint(g); }
 		} // Paints Background Textures NEEDS TO BE FIRST
 		
+		ridingAny = 0;
 		
-		int ridingAny = 0;
-		for (DonutLift dl : donutLifts_1) {
+		
+		newLifts_1.forEach((dl)->{
 			if (luigi.getBottomHitbox().intersects(dl.getHitbox())) {//If luigi is on the lift, move luigi as well
 				luigi.setRiding(true);
 				ridingAny++;
 				dl.setTimer(true);
 			}else {dl.setTimer(false);}
 			dl.paint(g);
-		}
+		});
+
 		
-		for (DonutLift dl : donutLifts_2) {
+		newLifts_2.forEach((dl)->{
 			if (luigi.getBottomHitbox().intersects(dl.getHitbox())) { 
 				luigi.setRiding(true); 
 				ridingAny++; 
 				dl.setTimer(true);
 			}else {dl.setTimer(false);}
 			dl.paint(g);
-		}
+		});
+		
 		
 		if (ridingAny==0) {luigi.setRiding(false); }
 		
@@ -179,6 +184,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	public void reset() {
 		gameOver = false;
 		luigi = new Luigi();
+		koopaShells[0] = new KoopaShell(400, 336);
+		
 	}
 	
 	public static void main(String[] arg) {
@@ -219,26 +226,26 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			exit[dr] = new Door((int) (32*dr), 336-(32*9));
 		}
 		
-		for (int d = 0; d < donutLifts_1.length; d++) {
+		
+		for (int d = 0; d < 10; d++) { //10 is the length of the lifts
 			int space = 0;
-			if (d>2) {space = 32;}
-			if (d>3) {space = 64;}
-			if (d>4) {space = 128;}
-			if (d>6) {space = 144;}
-			if (d>9) {space = 176;}
-			if (d>10) {space = 208;}
-			donutLifts_1[d] = new DonutLift(d*32+space,336-(32*6));	
+			if (d>1) {space = 32*2;}
+			if (d>4) {space = 32*5;}
+			if (d>5) {space = 32*7;} //space is the space to the RIGHT of the lift
+			if (d>7) {space = 32*8;}
+			if (d>8) {space = 32*10;}
+			newLifts_1.add(new DonutLift(d*32+space,336-(32*6)));	
 		}
 		
-		for (int d = 0; d < donutLifts_2.length; d++) { // bottom row
+		
+		for (int d = 0; d < 10; d++) { // bottom row
 			int space = 0;
-			if (d>2) {space = 32;}
-			if (d>4) {space = 64;}
-			if (d>7) {space = 128;}
-			if (d>8) {space = 144;}
-			if (d>10) {space = 176;}
-			if (d>12) {space = 208;}
-			donutLifts_2[d] = new DonutLift(d*32+50+space,336-(32*7));
+			if (d>1) {space = 32;}
+			if (d>3) {space = 32*5;}
+			if (d>4) {space = 32*7;} 
+			if (d>6) {space = 32*8;}
+			if (d>7) {space = 32*10;}
+			newLifts_2.add(new DonutLift(d*32+40+space,336-(32*7)));
 		}
 
 		
