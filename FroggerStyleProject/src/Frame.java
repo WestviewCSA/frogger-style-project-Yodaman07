@@ -46,6 +46,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 	ArrayList<DonutLift> newLifts_1 = new ArrayList<DonutLift>(); // Horizontally moving donut lifts
 	ArrayList<DonutLift> newLifts_2 = new ArrayList<DonutLift>();
+	ArrayList<LifeImage> lives = new ArrayList<LifeImage>();
 	
 	StaticTexture[][] bgRows = new StaticTexture[25][19]; 	//All background textures
 	
@@ -85,6 +86,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		
 		if (ridingAny==0) {luigi.setRiding(false); }
+		
+		//drawing the life counter images
+		for (LifeImage obj: lives) {
+			//drawing the LifeImage objects
+			obj.paint(g);
+		}
 		
 		
 		for (int i = 0; i < bgRows.length; i++) {
@@ -149,7 +156,13 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		luigi.paint(g);
 		
-		if (gameOver && !luigi.isCompleted()) { this.gameOver(deathMsg, g);}
+		
+		if (gameOver && !luigi.isCompleted()) {
+			if (this.lives.size()>0) {
+				this.reset(); 
+				this.lives.remove(this.lives.size()-1);
+			}else {this.gameOver(deathMsg, g);}
+		}
 		if (luigi.isCompleted()) {this.completed(g);}
 	}
 	
@@ -234,7 +247,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			if (d>5) {space = 32*7;} //space is the space to the RIGHT of the lift
 			if (d>7) {space = 32*8;}
 			if (d>8) {space = 32*10;}
-			newLifts_1.add(new DonutLift(d*32+space,336-(32*6)));	
+			this.newLifts_1.add(new DonutLift(d*32+space,336-(32*6)));	
 		}
 		
 		
@@ -245,7 +258,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			if (d>4) {space = 32*7;} 
 			if (d>6) {space = 32*8;}
 			if (d>7) {space = 32*10;}
-			newLifts_2.add(new DonutLift(d*32+40+space,336-(32*7)));
+			this.newLifts_2.add(new DonutLift(d*32+40+space,336-(32*7)));
 		}
 
 		
@@ -293,6 +306,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		for (int k = 0; k < koopaShells.length; k++) {
 			koopaShells[k] = new KoopaShell(400, 336);
 		}
+		
+		
+		for (int l = 0; l < 3; l++) { this.lives.add(new LifeImage(l*40, 10));}
 		
 		
 		//the cursor image must be outside of the src folder
@@ -391,6 +407,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			case (80): //P
 				if (gameOver || luigi.isCompleted()) {
 					this.reset();
+					this.lives.clear();
+					for (int l = 0; l < 3; l++) { this.lives.add(new LifeImage(l*40, 10));}
 					break;
 				}
 		}
