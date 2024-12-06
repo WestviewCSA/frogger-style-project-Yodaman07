@@ -23,8 +23,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	public static boolean debugging = false;
 	public static int width = 600;
 	public static int height = 800;
-	
+	boolean playTheme = true;
 	boolean gameOver = false;
+	
+	int totalGames = 1;
+	int totalAttempts = 1;
+	
 	String deathMsg = "";
 
 	boolean a = false;
@@ -34,9 +38,11 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	
 	Font myFont = new Font("Courier", Font.BOLD, 30);
 	Font otherFont = new Font("Courier", Font.BOLD, 20);
-	SimpleAudioPlayer backgroundMusic = new SimpleAudioPlayer("scifi.wav", false);
+	SimpleAudioPlayer backgroundMusic = new SimpleAudioPlayer("level.wav", false);
+	SimpleAudioPlayer winMusic = new SimpleAudioPlayer("complete.wav", false);
 //	Music soundBang = new Music("bang.wav", false);
 //	Music soundHaha = new Music("haha.wav", false);
+	
 	
 	Luigi luigi = new Luigi();
 	
@@ -130,6 +136,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			d.paint(g);
 			if (luigi.getHitbox().intersects(d.getHitbox())) {
 				gameOver = true; deathMsg = "Death To DryBones";
+				//Sets the game state and death messages
 			}
 		}
 		
@@ -160,15 +167,19 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		if (gameOver && !luigi.isCompleted()) {
 			if (this.lives.size()>0) {
 				this.reset(); 
+				totalAttempts+=1;
 				this.lives.remove(this.lives.size()-1);
-			}else {this.gameOver(deathMsg, g);}
+			}else {
+				this.gameOver(deathMsg, g);
+			}
 		}
 		if (luigi.isCompleted()) {this.completed(g);}
+		//Decides weather the game is completed or if the game over screen should show
 	}
 	
 	public void gameOver(String deathText, Graphics g) {
 		g.setFont(myFont);
-		
+		//Renders the 'game over' screen
 		g.setColor(new Color(0, 0, 0, 100));
 		g.fillRect(0, 0, width, height);
 		g.setColor(new Color(255, 255, 255));
@@ -181,8 +192,10 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	}
 	
 	public void completed(Graphics g) {
+		playTheme = false;
+		winMusic.play();
 		g.setFont(myFont);
-		
+		//Renders the 'completed' screen
 		g.setColor(new Color(0, 0, 0, 100));
 		g.fillRect(0, 0, width, height);
 		g.setColor(new Color (0, 60, 0));
@@ -192,9 +205,13 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		g.drawString("Completed Stage!", width/4+5 , height/4+50);
 		g.setFont(otherFont);
 		g.drawString("Press 'p' to play again", width/4 + 15 , height/4+150);
+		
+		g.drawString("Total Attempts: " + totalAttempts, width/4 + 15 , height/4+200);
+		g.drawString("Total Games: " + totalGames, width/4 + 15 , height/4+250);
 	}
 	
 	public void reset() {
+		playTheme = true;
 		gameOver = false;
 		luigi = new Luigi();
 		koopaShells[0] = new KoopaShell(400, 336);
@@ -214,8 +231,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		f.setResizable(true);
  		f.addMouseListener(this);
 		f.addKeyListener(this);
-	
-//		backgroundMusic.play();
+
+		if (playTheme) {backgroundMusic.play();}
 
 		// Setup any 1D array here! - create the objects that go in them ;) 
 
@@ -250,7 +267,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			this.newLifts_1.add(new DonutLift(d*32+space,336-(32*6)));	
 		}
 		
-		
+		//Adds the spacing for the donut lifts
 		for (int d = 0; d < 10; d++) { // bottom row
 			int space = 0;
 			if (d>1) {space = 32;}
@@ -406,6 +423,11 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 				break;
 			case (80): //P
 				if (gameOver || luigi.isCompleted()) {
+					totalGames+=1;
+					if (luigi.isCompleted()) {
+						totalAttempts = 1;
+						totalGames = 1;
+					}
 					this.reset();
 					this.lives.clear();
 					for (int l = 0; l < 3; l++) { this.lives.add(new LifeImage(l*40, 10));}

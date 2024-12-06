@@ -50,7 +50,9 @@ public class Luigi{
 	public Rectangle getBottomHitbox(){ return new Rectangle(x, y+(3*height/4), width, height/4);}//Bottom forth of Luigi
 	
 	public Rectangle getHitbox() { return new Rectangle(x, y, width, height);}
-	public boolean isCompleted() {return y<=50;}
+	public boolean isCompleted() {
+		return y<=50;
+	}
 	public void paint(Graphics g) {
 		//these are the 2 lines of code needed draw an image on the screen
 		Graphics2D g2 = (Graphics2D) g;

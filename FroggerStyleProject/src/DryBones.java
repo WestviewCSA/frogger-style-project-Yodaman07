@@ -70,7 +70,7 @@ public class DryBones{
 		if (Frame.debugging) {
 			//draw hitbox only if debugging
 			g.setColor(Color.green);
-			g.drawRect(x, y , width, height);
+			g.drawRect(x+4, y+5 , width-8, height-10);
 		}
 		
 	}

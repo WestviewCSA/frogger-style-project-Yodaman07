@@ -51,7 +51,7 @@ public class Boo{
 	}
 	
 	public Rectangle getHitbox() {
-		return new Rectangle(x + (width/4), y + (height/4), width, height); //crops the x and y as the image is actually 24x24 pixels
+		return new Rectangle(x + (width/4)+5, y + (height/4)+5, width-10, height-10); //crops the x and y as the image is actually 24x24 pixels
 	}
 
 	public void paint(Graphics g) {
@@ -72,7 +72,7 @@ public class Boo{
 		if (Frame.debugging) {
 			//draw hitbox only if debugging
 			g.setColor(Color.green);
-			g.drawRect(x + (width/4), y + (height/4), width, height);
+			g.drawRect(x + (width/4)+5, y + (height/4)+5, width-10, height-10);
 			// The (width/4) and (height/4) part moves down the hitbox to center on the sprite instead of being in the top right corner, 
 			//as the sprite is 24x24 because it contains extra space for colors
 		}
