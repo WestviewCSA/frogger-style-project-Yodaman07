@@ -23,7 +23,6 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	public static boolean debugging = false;
 	public static int width = 600;
 	public static int height = 800;
-	boolean playTheme = true;
 	boolean gameOver = false;
 	
 	int totalGames = 1;
@@ -31,14 +30,19 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	
 	String deathMsg = "";
 
-	boolean a = false;
 	boolean canLock = false; // KoopaShell Logic
 	boolean locked = false; // KoopaShell Logic
 	public int ridingAny;
 	
+	
+	/*
+	 * For anyone playing this game, note that basic Luigi control is WASD, and that
+	 * when trying to mount a koopa shell, you need to press Spacebar to do so.
+	 */
+	
 	Font myFont = new Font("Courier", Font.BOLD, 30);
 	Font otherFont = new Font("Courier", Font.BOLD, 20);
-	SimpleAudioPlayer backgroundMusic = new SimpleAudioPlayer("level.wav", false);
+	SimpleAudioPlayer backgroundMusic = new SimpleAudioPlayer("other.wav", true);
 	SimpleAudioPlayer winMusic = new SimpleAudioPlayer("complete.wav", false);
 //	Music soundBang = new Music("bang.wav", false);
 //	Music soundHaha = new Music("haha.wav", false);
@@ -192,7 +196,6 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	}
 	
 	public void completed(Graphics g) {
-		playTheme = false;
 		winMusic.play();
 		g.setFont(myFont);
 		//Renders the 'completed' screen
@@ -211,7 +214,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	}
 	
 	public void reset() {
-		playTheme = true;
+		winMusic = new SimpleAudioPlayer("complete.wav", false);
 		gameOver = false;
 		luigi = new Luigi();
 		koopaShells[0] = new KoopaShell(400, 336);
@@ -232,7 +235,6 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
  		f.addMouseListener(this);
 		f.addKeyListener(this);
 
-		if (playTheme) {backgroundMusic.play();}
 
 		// Setup any 1D array here! - create the objects that go in them ;) 
 
